@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'CloudFormation vpc'
+
+Parameters:
+  StackNameParameter:
+    Description: "The Stack Name where parameters will be imported from."
+    Type: "String"
+  ServerKeyName:
+    Description: "The key pair to establish a SSH connection to the web servers."
+    Type: "AWS::EC2::KeyPair::KeyName"
+
+Resources:
+  BastionInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId: 'ami-09693313102a30b2c'
+      KeyName: !Ref ServerKeyName
+      NetworkInterfaces:
+        - GroupSet:
+            - !ImportValue
+              'Fn::Sub': '${StackNameParameter}-BastionSecurityGroup'
+          AssociatePublicIpAddress: 'true'
+          DeviceIndex: '0'
+          DeleteOnTermination: 'true'
+          SubnetId: !ImportValue
+            'Fn::Sub': '${StackNameParameter}-Public0'
+      Tags:
+        - Key: Name
+          Value: !Join [ "-", [ !Ref StackNameParameter, bastion-host ] ]
+
+  ServerSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: server Security Groups
+      VpcId: !ImportValue
+            'Fn::Sub': '${StackNameParameter}'
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
+      Tags:
+      - Key: Name
+        Value: !Join [ "-", [ !Ref StackNameParameter, ServerSG ] ]
+
+  PrivateInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId: 'ami-09693313102a30b2c'
+      KeyName: !Ref ServerKeyName
+      NetworkInterfaces:
+        - GroupSet:
+            - !Ref ServerSecurityGroup
+          AssociatePublicIpAddress: 'false'
+          DeviceIndex: '0'
+          DeleteOnTermination: 'true'
+          SubnetId: !ImportValue
+            'Fn::Sub': '${StackNameParameter}-Private1'
+      Tags:
+        - Key: Name
+          Value: !Join [ "-", [ !Ref StackNameParameter, server-host ] ]
