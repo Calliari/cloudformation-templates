@@ -1,0 +1,153 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'CloudFormation vpc'
+
+Parameters:
+  TagName:
+    Description: 'The tag name for this infrastructure.'
+    Type: 'String'
+    Default: VPC-proj-1
+
+Resources:
+  VPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: 'true'
+      EnableDnsSupport: 'true'
+      Tags:
+        - Key: Name
+          Value: !Ref TagName
+
+  SubnetPublic0:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone: !Select
+        - '0'
+        - !GetAZs ''
+      Tags:
+        - Key: Name
+          Value: !Join [ "-", [ !Ref TagName, subnet-Public0 ] ]
+  SubnetPrivate1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select
+        - '1'
+        - !GetAZs ''
+      Tags:
+        - Key: Name
+          Value: !Join [ "-", [ !Ref TagName, subnet-Private1 ] ]
+
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Join [ "-", [ !Ref TagName, IGW ] ]
+  VPCGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRT:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: !Join [ "-", [ !Ref TagName, PublicRT ] ]
+  PrivateRT:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: !Join [ "-", [ !Ref TagName, PrivateRT ] ]
+
+  NATElasticIP:
+    Type: 'AWS::EC2::EIP'
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      Domain: vpc
+  NATGateway:
+    Type: 'AWS::EC2::NatGateway'
+    DependsOn: NATElasticIP
+    Properties:
+      AllocationId: !GetAtt
+        - NATElasticIP
+        - AllocationId
+      SubnetId: !Ref SubnetPublic0
+      Tags:
+      - Key: Name
+        Value: !Join [ "-", [ !Ref TagName, NATGateway ] ]
+  NATGatewayRoute:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref PrivateRT
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway
+
+  RoutePublicNATToInternet:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref PublicRT
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+    DependsOn: VPCGatewayAttachment
+  NATGatewayRoute:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref PrivateRT
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway
+
+  RouteTableAssociationPublic:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref SubnetPublic0
+      RouteTableId: !Ref PublicRT
+  RouteTableAssociationPrivate:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref SubnetPrivate1
+      RouteTableId: !Ref PrivateRT
+
+  BastionSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: bastion Security Groups
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: !Join [ "-", [ !Ref TagName, bastionSG ] ]
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: 22
+          IpProtocol: tcp
+          ToPort: 22
+
+Outputs:
+  StackVPC:
+    Description: The ID of the VPC
+    Value: !Ref VPC
+    Export:
+      Name: !Sub "${AWS::StackName}"
+  StackVPCSubnetPublic0:
+    Description: The SubnetPublic of the VPC
+    Value: !Ref SubnetPublic0
+    Export:
+      Name: !Sub "${AWS::StackName}-Public0"
+  StackVPCSubnetPrivate1:
+    Description: The SubnetPrivate of the VPC
+    Value: !Ref SubnetPrivate1
+    Export:
+      Name: !Sub "${AWS::StackName}-Private1"
+  StackVPCBastionSecurityGroup:
+    Description: The Bastion Security Group of the VPC
+    Value: !Ref BastionSecurityGroup
+    Export:
+      Name: !Sub "${AWS::StackName}-BastionSecurityGroup"
