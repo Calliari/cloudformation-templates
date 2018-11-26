@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: 'CloudFormation vpc'
+Description: 'CloudFormation ec2 server'
 
 Parameters:
   StackNameParameter:
