@@ -47,11 +47,12 @@ Resources:
   ServerSecurityGroupSSH:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: server Security Groups
+      GroupDescription: private server Security Groups
       VpcId: !ImportValue
             'Fn::Sub': '${StackNameParameter}'
       SecurityGroupIngress:
         - CidrIp: 0.0.0.0/0
+        - CidrIp: !GetAtt BastionInstance.PrivateIp
           FromPort: 22
           IpProtocol: tcp
           ToPort: 22
