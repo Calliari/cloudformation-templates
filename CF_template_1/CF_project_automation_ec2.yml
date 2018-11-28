@@ -29,7 +29,7 @@ Resources:
         - Key: Name
           Value: !Join [ "-", [ !Ref StackNameParameter, bastion-host ] ]
 
-  ServerSecurityGroup:
+  ServerSecurityGroupWeb:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: server Security Groups
@@ -42,7 +42,22 @@ Resources:
           ToPort: 80
       Tags:
       - Key: Name
-        Value: !Join [ "-", [ !Ref StackNameParameter, ServerSG ] ]
+        Value: !Join [ "-", [ !Ref StackNameParameter, Web-ServerSG ] ]
+
+  ServerSecurityGroupSSH:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: server Security Groups
+      VpcId: !ImportValue
+            'Fn::Sub': '${StackNameParameter}'
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: 22
+          IpProtocol: tcp
+          ToPort: 22
+      Tags:
+      - Key: Name
+        Value: !Join [ "-", [ !Ref StackNameParameter, ssh-ServerSG ] ]
 
   PrivateInstance:
     Type: 'AWS::EC2::Instance'
