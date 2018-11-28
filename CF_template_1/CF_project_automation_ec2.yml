@@ -67,7 +67,8 @@ Resources:
       KeyName: !Ref ServerKeyName
       NetworkInterfaces:
         - GroupSet:
-            - !Ref ServerSecurityGroup
+            - !Ref ServerSecurityGroupWeb
+            - !Ref ServerSecurityGroupSSH
           AssociatePublicIpAddress: 'false'
           DeviceIndex: '0'
           DeleteOnTermination: 'true'
