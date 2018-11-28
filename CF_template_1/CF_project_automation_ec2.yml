@@ -51,7 +51,7 @@ Resources:
       VpcId: !ImportValue
             'Fn::Sub': '${StackNameParameter}'
       SecurityGroupIngress:
-        - CidrIp: !GetAtt BastionInstance.PrivateIp
+        - CidrIp: !Join [ "", [ !GetAtt BastionInstance.PrivateIp, /32 ] ]
           FromPort: 22
           IpProtocol: tcp
           ToPort: 22
@@ -68,7 +68,7 @@ Resources:
       NetworkInterfaces:
         - GroupSet:
             - !Ref ServerSecurityGroupWeb
-            - !Join [ "", [ !Ref ServerSecurityGroupSSH, /32 ] ]
+            - !Ref ServerSecurityGroupSSH
           AssociatePublicIpAddress: 'false'
           DeviceIndex: '0'
           DeleteOnTermination: 'true'
