@@ -9,7 +9,7 @@ The templater will create the following resources:
 - internate gateway
 - NAT gateway
 - a route table actached to a private sub
-- a rpute table attadhed to a public sub
+- a route table attadhed to a public sub
 - the ACLs for each subnet
 
 
