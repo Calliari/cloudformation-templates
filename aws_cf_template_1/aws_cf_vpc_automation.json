@@ -589,15 +589,28 @@
                 "Egress": "true",
                 "CidrBlock": "10.99.0.0/16"
             }
-        },
-           "Outputs": {
-        "vpc_id": {
-            "Description": "VPC ID",
+        }
+    },
+    "Outputs": {
+        "StackName": {
+            "Description": "Exporting the stack name to be used in an cross-stack template references ",
             "Value": {
-                "Ref": "VPC",
-                },
-                "Export" : {
-                  "Name": "exported-vpc-id"
+                "Ref": "VPC"
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Sub": "${AWS::StackName}"
+                }
+            }
+        },
+        "VPC": {
+            "Description": "Exporting the VPC ID to be used in an cross-stack template references ",
+            "Value": {
+                "Ref": "VPC"
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Sub": "${AWS::StackName}-VPC-ID"
                 }
             }
         }
