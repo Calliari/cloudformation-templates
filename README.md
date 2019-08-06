@@ -2,15 +2,15 @@
 
 #### aws_cf_template dir have temapltes to create a VPV. (The templates are in yml and json format)
 These templates are the same but one writeen in JSON and the another in YML.
-The templater will create the following resources:
+The templates will create the following resources:
 - VPC: 1
 - public subnets: 2
 - private subnets: 2
-- internate gateway
-- NAT gateway
-- a route table actached to a private sub
-- a route table attadhed to a public sub
-- the ACLs for each subnet
+- internate gateway: 1
+- NAT gateway: 1
+- a route table actached to a private subnet: 1
+- a route table attadhed to a public subnet: 1
+- the ACLs for each subnet created
 
 
 #### aws_cf_template_1 dir contain a temaplte to create a VPC and an ec2
