@@ -2,22 +2,21 @@
 
 
 The `aws_cf_project_automation_vpc.yml` would create resources as the following:
-
 - vpc
-- SubnetPublic0:
-- SubnetPrivate1:
-- InternetGateway:
-- VPCGatewayAttachment:
-- PublicRT:
-- PrivateRT:
-- NATElasticIP:
-- NATGateway:
-- NATGatewayRoute:
-- RoutePublicNATToInternet:
-- NATGatewayRoute:
-- RouteTableAssociationPublic:
-- RouteTableAssociationPrivate:
-- BastionSecurityGroup:
+- SubnetPublic0
+- SubnetPrivate1
+- InternetGateway
+- VPCGatewayAttachment
+- PublicRT
+- PrivateRT
+- NATElasticIP
+- NATGateway
+- NATGatewayRoute
+- RoutePublicNATToInternet
+- NATGatewayRoute
+- RouteTableAssociationPublic
+- RouteTableAssociationPrivate
+- BastionSecurityGroup
 
 
 - Outputs:
