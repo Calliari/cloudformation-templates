@@ -13,7 +13,7 @@ The templates will create the following resources:
 - the ACLs for each subnet created
 
 
-#### aws_cf_template_1 dir contain a temaplte to create a VPC and an ec2
+#### aws_cf_template_1 dir contain a template to create a VPC and an ec2
 - 1 create a VPC with a vpc template (aws_cf_project_automation_vpc.yml)
 - 2 use the template which will need three parameters to create an ec2 intance based on the previous template. (aws_cf_project_automation_ec2.yml)
 
