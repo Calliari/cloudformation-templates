@@ -1,6 +1,6 @@
 # cloudformation-templates
 
-#### aws_cf_template dir have temapltes to create a VPV. (The templates are in yml and json format)
+#### aws_cf_template dir have templates to create a VPV. (The templates are in yml and json format)
 These templates are the same but one writeen in JSON and the another in YML.
 The templates will create the following resources:
 - VPC: 1
