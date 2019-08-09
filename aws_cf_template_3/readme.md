@@ -20,4 +20,4 @@ And run:
 - `sudo yum update` to update all software packages
 - `aws s3 ls` one bucket will be listed as part of the cloudformation
 - `aws s3 mb s3://testbucket-mybucket` create a new bucket (buckets' need to be global unique so change the same if it's failed)
-- aws s3 ls `now there are 2 buckets`
+- `aws s3 ls` now there are 2 buckets
