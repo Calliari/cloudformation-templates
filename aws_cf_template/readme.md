@@ -1,12 +1,13 @@
 ## cloudformation-templates
 
-The two templates would create thesame resources they are just in different format one in JOSON and another in YAML; 
+The two templates would create the same resources, the temapltes are just in different format one in JSON and another in YAML; 
 
 - `aws_cf_vpc_automation.json` 
 - `aws_cf_vpc_automation.yml`
 
 
-#### resources that would be created and two outputs that exposing some resoiurtces, can be used as cross-template or nested-template
+#### resources that would be created and two outputs that exposing some resourtces, can be used as cross-template or nested-template
+
 - VPC: 1
 - public subnets: 2
 - private subnets: 2
