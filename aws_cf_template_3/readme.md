@@ -13,8 +13,7 @@ Resources:
 
 
 <hr> 
-SSH into ec2:
-- `ssh ec2-user@3.85.172.254 -i tempkey.pem`
+SSH into ec2: `ssh ec2-user@3.85.172.254 -i tempkey.pem`
 
 And run:
 - `sudo yum update` to update all software packages
